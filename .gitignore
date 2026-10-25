@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Project specific
+*.log
+*.sqlite3
+*.db
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Ignore data and cache
+data/
+
+# Ignore results and models if you do not want to push them
+# results/
+# models/
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+notebooks/__pycache__/
+
+# Ignore zip and archive files
+archive.zip
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Ignore OS files
+.DS_Store
+Thumbs.db

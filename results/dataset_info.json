@@ -1,0 +1,32 @@
+{
+    "train_samples": 22967,
+    "val_samples": 5742,
+    "test_samples": 7178,
+    "class_distribution_train": {
+        "angry": 3196,
+        "disgust": 349,
+        "fear": 3277,
+        "happy": 5772,
+        "sad": 3864,
+        "surprise": 2537,
+        "neutral": 3972
+    },
+    "class_distribution_val": {
+        "angry": 799,
+        "disgust": 87,
+        "fear": 820,
+        "happy": 1443,
+        "sad": 966,
+        "surprise": 634,
+        "neutral": 993
+    },
+    "class_distribution_test": {
+        "angry": 958,
+        "disgust": 111,
+        "fear": 1024,
+        "happy": 1774,
+        "sad": 1247,
+        "surprise": 831,
+        "neutral": 1233
+    }
+}

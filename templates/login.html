@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Login - Emotion Recognition AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            margin: 20px;
+        }
+
+        .login-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .login-body {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            z-index: 5;
+            font-size: 1.1rem;
+        }
+
+        .form-control.with-icon {
+            padding-left: 50px;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            color: white;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 20px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .features-preview {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .feature-item i {
+            margin-right: 10px;
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        .demo-stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .demo-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 10px;
+            }
+            
+            .login-header {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 2rem;
+            }
+            
+            .login-body {
+                padding: 30px 20px;
+            }
+            
+            .demo-stats {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Stats -->
+    <div class="demo-stats d-none d-md-block">
+        <div class="text-center">
+            <i class="fas fa-brain"></i> <strong>AI Model</strong><br>
+            <small>61.33% Accuracy | 617K Parameters</small>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <h1>
+                <i class="fas fa-brain"></i> Welcome
+            </h1>
+            <p>Login to access Emotion Recognition AI</p>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom" role="alert">
+                            <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Demo Credentials Info -->
+            <div class="demo-info">
+                <h6><i class="fas fa-key"></i> Demo Credentials</h6>
+                <p class="mb-2">Username: <strong>demo</strong></p>
+                <p class="mb-0">Password: <strong>demo123</strong></p>
+                <small>Or create your own account below</small>
+            </div>
+
+            <!-- Login Required Notice -->
+            <div class="alert alert-info alert-custom">
+                <i class="fas fa-lock"></i>
+                <strong>Login Required:</strong> Please sign in to access emotion detection features and view your personal analytics dashboard.
+            </div>
+
+            <!-- Login Form -->
+            <form method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control with-icon" 
+                               id="username" 
+                               name="username" 
+                               placeholder="Enter your username"
+                               value="demo"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" 
+                               class="form-control with-icon" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Enter your password"
+                               value="demo123"
+                               required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Continue
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>New to Emotion AI?</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="register-link">
+                <p class="mb-2">Don't have an account?</p>
+                <a href="/register" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-user-plus"></i> Create New Account
+                </a>
+            </div>
+
+            <!-- Features Preview -->
+            <div class="features-preview d-md-none">
+                <h6 class="mb-3">
+                    <i class="fas fa-star"></i> What you'll get:
+                </h6>
+                <div class="feature-item">
+                    <i class="fas fa-camera"></i>
+                    Real-time emotion detection via webcam
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-pie"></i>
+                    Personal analytics and emotion history
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-brain"></i>
+                    AI-powered analysis with 7 emotion classes
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-download"></i>
+                    Export your emotion data for insights
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Login Enhancement Script -->
+    <script>
+        // Form validation and enhancement
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // Add loading state to login button
+        loginForm.addEventListener('submit', function(e) {
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+            loginBtn.disabled = true;
+        });
+
+        // Enhanced input focus effects
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // Quick fill demo credentials
+        function fillDemoCredentials() {
+            usernameInput.value = 'demo';
+            passwordInput.value = 'demo123';
+            updateButtonText();
+        }
+
+        // Update button text based on input
+        function updateButtonText() {
+            const hasUsername = usernameInput.value.length > 0;
+            const hasPassword = passwordInput.value.length > 0;
+            
+            if (hasUsername && hasPassword) {
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Continue';
+                loginBtn.disabled = false;
+            } else {
+                loginBtn.innerHTML = '<i class="fas fa-edit"></i> Enter your credentials';
+                loginBtn.disabled = false; // Keep button enabled
+            }
+        }
+
+        // Listen for input changes
+        usernameInput.addEventListener('input', updateButtonText);
+        passwordInput.addEventListener('input', updateButtonText);
+
+        // Demo credentials helper
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                fillDemoCredentials();
+            }
+        });
+
+        // Auto-focus username field and set initial state
+        window.addEventListener('load', function() {
+            updateButtonText();
+            if (!usernameInput.value) {
+                usernameInput.focus();
+            }
+        });
+
+        // Double-click demo info to fill credentials
+        document.querySelector('.demo-info').addEventListener('dblclick', function() {
+            fillDemoCredentials();
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,10 @@
+# Normalize line endings; shell scripts must use LF to run on Linux (Render)
+* text=auto
+*.sh text eol=lf
+Procfile text eol=lf
+
+# Binary files
+*.h5 binary
+*.png binary
+*.jpg binary
+*.db binary

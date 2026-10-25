@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard - Emotion Recognition AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .main-container {
+            padding: 100px 0 60px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .welcome-section {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stats-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .emotion-chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .history-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .table td {
+            padding: 15px;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .emotion-badge {
+            padding: 5px 15px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 80px 0 40px;
+            }
+            
+            .dashboard-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .welcome-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain"></i> Emotion AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/detect">
+                            <i class="fas fa-camera"></i> Detect
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/database-viewer">
+                            <i class="fas fa-database"></i> Database
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dashboard">
+                            <i class="fas fa-chart-pie"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>
+                <i class="fas fa-user-circle"></i> Welcome back, {{ username }}!
+            </h1>
+            <p class="lead mb-0">Here's your emotion detection history and statistics</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-chart-line" style="color: var(--primary-color);"></i>
+                    </div>
+                    <div class="stats-number">{{ total_detections }}</div>
+                    <div class="stats-label">Total Detections</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-smile" style="color: #FFA07A;"></i>
+                    </div>
+                    <div class="stats-number">{{ emotion_stats.get('happy', {}).get('count', 0) }}</div>
+                    <div class="stats-label">Happy Moments</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-brain" style="color: var(--secondary-color);"></i>
+                    </div>
+                    <div class="stats-number">{{ emotion_stats|length }}</div>
+                    <div class="stats-label">Unique Emotions</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-day" style="color: var(--success-color);"></i>
+                    </div>
+                    <div class="stats-number">{{ history|length if history else 0 }}</div>
+                    <div class="stats-label">Recent Sessions</div>
+                </div>
+            </div>
+        </div>
+
+        {% if emotion_stats %}
+        <!-- Emotion Distribution Chart -->
+        <div class="dashboard-card">
+            <h3 class="section-title">
+                <i class="fas fa-chart-pie"></i> Emotion Distribution
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="emotion-chart-container">
+                        <canvas id="emotionChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="mb-3">Emotion Breakdown</h5>
+                    {% for emotion, stats in emotion_stats.items() %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="emotion-badge" style="background-color: {{ colors[emotion] }};">
+                                {{ emotion.title() }}
+                            </span>
+                            <strong>{{ stats.percentage }}%</strong>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" 
+                                 style="width: {{ stats.percentage }}%; background-color: {{ colors[emotion] }};"></div>
+                        </div>
+                        <small class="text-muted">{{ stats.count }} detections</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent History -->
+        <div class="dashboard-card">
+            <h3 class="section-title">
+                <i class="fas fa-history"></i> Recent Detection History
+            </h3>
+            
+            {% if history %}
+            <div class="history-table">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-clock"></i> Time</th>
+                            <th><i class="fas fa-smile"></i> Emotion</th>
+                            <th><i class="fas fa-percentage"></i> Confidence</th>
+                            <th><i class="fas fa-chart-bar"></i> Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in history[:10] %}
+                        <tr>
+                            <td>{{ record[3] }}</td> <!-- timestamp -->
+                            <td>
+                                <span class="emotion-badge" style="background-color: {{ colors[record[1]] }};">
+                                    {{ record[1].title() }}
+                                </span>
+                            </td>
+                            <td>{{ "%.1f"|format(record[2] * 100) }}%</td>
+                            <td>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" 
+                                         style="width: {{ record[2] * 100 }}%; background-color: {{ colors[record[1]] }};"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if history|length > 10 %}
+            <div class="text-center mt-3">
+                <small class="text-muted">Showing last 10 detections out of {{ history|length }} total</small>
+            </div>
+            {% endif %}
+            
+            {% else %}
+            <div class="no-data">
+                <i class="fas fa-chart-line"></i>
+                <h4>No Detection History</h4>
+                <p>Start detecting emotions to see your history here!</p>
+                <a href="/detect" class="btn-custom">
+                    <i class="fas fa-camera"></i> Start Detecting
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-card">
+            <h3 class="section-title">
+                <i class="fas fa-bolt"></i> Quick Actions
+            </h3>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <a href="/detect" class="btn-custom w-100 text-center">
+                        <i class="fas fa-camera"></i><br>
+                        New Detection
+                    </a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <a href="/logout" class="btn-custom w-100 text-center" style="background: linear-gradient(45deg, var(--danger-color), #e74c3c);">
+                        <i class="fas fa-sign-out-alt"></i><br>
+                        Logout
+                    </a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button class="btn-custom w-100 text-center" onclick="downloadHistory()">
+                        <i class="fas fa-download"></i><br>
+                        Export Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart and Dashboard Script -->
+    <script>
+        // Emotion data from backend
+        const emotionStats = {{ emotion_stats|tojson }};
+        const emotionColors = {{ colors|tojson }};
+
+        // Create pie chart if we have data
+        if (Object.keys(emotionStats).length > 0) {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            
+            const labels = Object.keys(emotionStats).map(emotion => 
+                emotion.charAt(0).toUpperCase() + emotion.slice(1)
+            );
+            const data = Object.values(emotionStats).map(stats => stats.count);
+            const backgroundColors = Object.keys(emotionStats).map(emotion => emotionColors[emotion]);
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0,
+                        cutout: '60%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    family: "'Poppins', sans-serif",
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const emotion = context.label;
+                                    const count = context.parsed;
+                                    const percentage = emotionStats[emotion.toLowerCase()].percentage;
+                                    return `${emotion}: ${count} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Download history function
+        function downloadHistory() {
+            const history = {{ history|tojson }};
+            if (!history || history.length === 0) {
+                alert('No history data to download');
+                return;
+            }
+
+            // Create CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "User ID,Emotion,Confidence,Timestamp\n";
+            
+            history.forEach(record => {
+                csvContent += `${record[0]},${record[1]},${record[2]},${record[3]}\n`;
+            });
+
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "emotion_history.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Animate confidence bars on page load
+        window.addEventListener('load', () => {
+            const confidenceFills = document.querySelectorAll('.confidence-fill');
+            confidenceFills.forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html> 

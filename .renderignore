@@ -1,0 +1,51 @@
+# Render ignore file - exclude these from deployment
+
+# Development files
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+.env
+.venv/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Jupyter notebooks
+*.ipynb
+notebooks/
+
+# Large data files (keep essential models only)
+data/train/
+data/test/
+*.png
+*.jpg
+*.jpeg
+plot/
+plots/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation
+README.md
+LICENSE 

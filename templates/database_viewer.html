@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    
+    <nav class="navbar navbar-expand-lg navbar-light" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-database"></i> Database Viewer</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/detect">Detection</a>
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="bg-white rounded" style="padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);">
+            
+            <div class="text-center mb-4" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 30px; border-radius: 15px;">
+                <h1><i class="fas fa-database"></i> Database Viewer</h1>
+                <p>Logged in as: {{ username }}</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-table" style="font-size: 2rem; color: #667eea;"></i>
+                            <h4>{{ db_info.tables|length }}</h4>
+                            <p>Tables</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users" style="font-size: 2rem; color: #28a745;"></i>
+                            <h4>{{ db_info.user_stats.total }}</h4>
+                            <p>Users</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-smile" style="font-size: 2rem; color: #ffc107;"></i>
+                            <h4>{{ db_info.emotion_stats.total }}</h4>
+                            <p>Emotions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line" style="font-size: 2rem; color: #17a2b8;"></i>
+                            <h4>{{ (db_info.emotion_stats.total / db_info.user_stats.total)|round(1) if db_info.user_stats.total > 0 else 0 }}</h4>
+                            <p>Avg/User</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            {% for table in db_info.tables %}
+            <div class="card mb-4">
+                <div class="card-header" style="background: #667eea; color: white;">
+                    <h5>{{ table.name.upper() }} <span class="badge bg-light text-dark">{{ table.row_count }} rows</span></h5>
+                </div>
+                <div class="card-body">
+                    <h6>Cấu trúc bảng:</h6>
+                    <table class="table table-sm">
+                        <thead style="background: #f8f9fa;">
+                            <tr>
+                                <th>Cột</th>
+                                <th>Kiểu</th>
+                                <th>NOT NULL</th>
+                                <th>Primary Key</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for col in table.columns %}
+                            <tr>
+                                <td><strong>{{ col.name }}</strong></td>
+                                <td><span class="badge bg-info">{{ col.type }}</span></td>
+                                <td>{{ col.not_null }}</td>
+                                <td>{{ col.pk }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    {% if table.sample_data.rows %}
+                    <h6>Dữ liệu mẫu:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    {% for col in table.sample_data.columns %}
+                                    <th>{{ col }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in table.sample_data.rows %}
+                                <tr>
+                                    {% for value in row %}
+                                    <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
+                                        {% if table.name == 'users' and loop.index == 3 %}
+                                            [HIDDEN]
+                                        {% else %}
+                                            {{ value }}
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Emotion Stats -->
+            {% if db_info.emotion_stats.total > 0 %}
+            <div class="card mb-4">
+                <div class="card-header" style="background: #ffc107;">
+                    <h5>Thống kê cảm xúc</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for emotion in db_info.emotion_stats.breakdown %}
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 rounded" style="background: 
+                                {% if emotion.emotion == 'angry' %}#FF6B6B
+                                {% elif emotion.emotion == 'happy' %}#FFA07A
+                                {% elif emotion.emotion == 'sad' %}#98D8C8
+                                {% elif emotion.emotion == 'surprise' %}#F7DC6F
+                                {% elif emotion.emotion == 'fear' %}#45B7D1
+                                {% elif emotion.emotion == 'disgust' %}#4ECDC4
+                                {% else %}#BB8FCE{% endif %}; color: white;">
+                                <strong>{{ emotion.emotion.title() }}:</strong> {{ emotion.count }} ({{ emotion.percentage }}%)
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <h6 class="mt-3">Top Users:</h6>
+                    {% for user in db_info.emotion_stats.top_users %}
+                    <div class="d-inline-block m-1">
+                        <span class="badge bg-primary">{{ user[0] }}: {{ user[1] }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="text-center">
+                <a href="/dashboard" class="btn btn-primary me-2">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="/detect" class="btn btn-success me-2">
+                    <i class="fas fa-camera"></i> Detection
+                </a>
+                <button onclick="window.location.reload()" class="btn btn-info">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Auto refresh every 30 seconds -->
+    <script>
+        setTimeout(() => window.location.reload(), 30000);
+    </script>
+</body>
+</html> 
